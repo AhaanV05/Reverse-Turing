@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Turing</title>
+    <link rel="stylesheet" href="/static/output.css?v=2">
+
+</head>
+
+<body class="bg-mattblack relative">
+
+    <div class="flex z-40 mt-4 py-8 w-screen justify-center">
+        <div class="border-4 rounded-lg bg-mattblack z-40 border-neongreen h-[80%] w-[95%] relative">
+            <!-- <div class="sigailogo absolute left-0 -z-0 top-0 rounded-lg w-full h-full opacity-20"></div> -->
+            <div class="absolute bottom-full left-0 font-pixelify text-neongreen text-3xl py-2">
+                  Reverse Turing
+            </div>
+            <div class="absolute top-full right-0 font-pixelify text-neongreen text-2xl py-2">
+                <a href="/dashboard">&lt;- dashboard</a>
+            </div>
+            <div class="text-neongreen p-4 relative z-50 font-pixelify font-bold text-center">
+                <h1 class="text-4xl md:text-7xl">
+                    Leaderboard
+                </h1>
+                
+                <div class="mt-8">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-neongreen text-center text-mattblack text-xl md:text-3xl">
+                                <th class="py-2">Rank</th>
+                                <th class="py-2">Username</th>
+                                <th class="py-2">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{leaderboard | safe}}
+                        </tbody>
+                    </table>
+                </div>
+                
+                
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        localStorage.removeItem("timer");
+    </script>
+</body>
+
+</html>

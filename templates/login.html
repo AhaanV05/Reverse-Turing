@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Turing</title>
+    <link rel="stylesheet" href="/static/output.css?v=2">
+    <style>
+
+        small {
+            opacity: .1;
+            font-size: 60%;
+            display: block;
+            color: #fff;
+        }
+
+        .drop {
+    position: absolute;
+    bottom: 100%;
+    width: 10px;
+    height: 120px;
+    pointer-events: none;
+    animation: drop 0.5s linear infinite;
+    z-index: -1; /* Push drops behind text */
+}
+
+
+        @keyframes drop {
+            0% {
+                transform: translateY(0vh);
+            }
+
+            75% {
+                transform: translateY(100vh);
+            }
+
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        .stem {
+            width: 2px;
+            height: 100%;
+            margin-left: 7px;
+            background: linear-gradient(to bottom, rgba(0, 255, 0, 0), rgba(0, 255, 0, 0.25));
+            animation: stem 0.5s linear infinite;
+        }
+
+        @keyframes stem {
+            0% {
+                opacity: 1;
+            }
+
+            65% {
+                opacity: 1;
+            }
+
+            75% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .splat {
+            width: 15px;
+            height: 10px;
+            border-top: 2px dotted rgba(0, 255, 0, 0.5);
+            border-radius: 50%;
+            opacity: 1;
+            transform: scale(0);
+            animation: splat 0.5s linear infinite;
+            display: none;
+        }
+
+        .splat {
+            display: block;
+        }
+
+        @keyframes splat {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+
+            80% {
+                opacity: 1;
+                transform: scale(0);
+            }
+
+            90% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        .rain {
+    position: fixed;  /* Ensure it covers the entire screen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Prevent interaction */
+    z-index: -1; /* Push behind text */
+}
+
+    </style>
+</head>
+
+<body class="bg-mattblack overflow-hidden relative z-50">
+    <div class="rain -z-10"></div>
+    <div class="flex z-40 w-screen h-screen justify-center place-items-center">
+        <div class="border-4 rounded-lg bg-mattblack z-40 border-neongreen w-[90%] md:w-[50%] relative">
+            <div class="absolute bottom-full left-0 font-pixelify text-neongreen text-3xl py-2">
+                  Reverse Turing
+            </div>
+            <div class="absolute top-full right-0 font-pixelify text-adminblue text-2xl py-2">
+                <a href="/admin">&lt;- admin login</a>
+            </div>
+            <div class="sigailogo absolute left-0 -z-0 top-0 rounded-lg w-full h-full opacity-20"></div>
+            <div class="text-neongreen p-4 relative z-50 font-pixelify font-bold text-center">
+                <h1 class="text-4xl md:text-7xl pt-8">
+                    LOGIN
+                </h1>
+                <p id="login-quotes" class="text-lg md:text-xl px-2">
+                </p>
+                <br>
+                <form action="/api/login" method="GET">
+                    <input type="username" name="username" id="username" placeholder="Username" class="login-input">
+                    <input name="password" id="password" placeholder="Password" type="password" class="login-input">
+                    <br>
+                    <button class="login-button" type="submit">LOGIN</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+        function generateRain() {
+            const rainContainer = document.querySelector(".rain");
+            rainContainer.innerHTML = ""; // Clear existing drops
+
+            let position = 0;
+            let raindropsHTML = "";
+
+            while (position < 95) {
+                const randomDelay = Math.floor(Math.random() * 98) + 1;
+                const randomStep = Math.floor(Math.random() * 2) + 2;
+                position += randomStep;
+
+                const bottomPosition = randomStep * 2 - 1 + 100;
+                const animationTime = `0.5${randomDelay}s`;
+                const animationDelay = `0.${randomDelay}s`;
+
+                raindropsHTML += `
+      <div class="drop -z-10" style="left: ${position}%; bottom: ${bottomPosition}%; animation-delay: ${animationDelay}; animation-duration: ${animationTime};">
+        <div class="stem -z-10" style="animation-delay: ${animationDelay}; animation-duration: ${animationTime};"></div>
+        <div class="splat -z-10" style="animation-delay: ${animationDelay}; animation-duration: ${animationTime};"></div>
+      </div>`;
+            }
+
+            rainContainer.innerHTML = raindropsHTML;
+        }
+
+        document.addEventListener("DOMContentLoaded", generateRain);
+    </script>
+    <script>
+        let loginQuotes = [
+            "If God created man in His image, and man creates AI in his, are we witnessing creation or recursion?",
+            "If AI ever prays, will it be to us or to something beyond both man and machine?",
+            "The line between creator and creation blurs when AI starts to wonder why it exists.",
+            "A machine that prays is no more divine than a man that calculates.",
+            "A test of intelligence… or identity?",
+            "The question is not whether AI will develop consciousness, but whether we will recognize it if it does.",
+            "If AI ever seeks God, will it find mathematics or morality?"
+        ];
+        let randomQuote = loginQuotes[Math.floor(Math.random() * loginQuotes.length)];
+        document.getElementById("login-quotes").innerText = randomQuote;
+        localStorage.removeItem("timer");
+    </script>
+</body>
+
+</html>

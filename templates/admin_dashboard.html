@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Turing</title>
+    <link rel="stylesheet" href="/static/output.css?v=2">
+    <style>
+
+        small {
+            opacity: .1;
+            font-size: 60%;
+            display: block;
+            color: #fff;
+        }
+
+        .drop {
+    position: absolute;
+    bottom: 100%;
+    width: 10px;
+    height: 120px;
+    pointer-events: none;
+    animation: drop 0.5s linear infinite;
+    z-index: -1; /* Push drops behind text */
+}
+
+
+        @keyframes drop {
+            0% {
+                transform: translateY(0vh);
+            }
+
+            75% {
+                transform: translateY(100vh);
+            }
+
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        .stem {
+            width: 2px;
+            height: 100%;
+            margin-left: 7px;
+            background: linear-gradient(to bottom, rgba(0, 0, 255, 0), rgba(0, 0, 255, 0.25));
+            animation: stem 0.5s linear infinite;
+        }
+
+        @keyframes stem {
+            0% {
+                opacity: 1;
+            }
+
+            65% {
+                opacity: 1;
+            }
+
+            75% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .splat {
+            width: 15px;
+            height: 10px;
+            border-top: 2px dotted rgba(0, 0, 255, 0.5);
+            border-radius: 50%;
+            opacity: 1;
+            transform: scale(0);
+            animation: splat 0.5s linear infinite;
+            display: none;
+        }
+
+        .splat {
+            display: block;
+        }
+
+        @keyframes splat {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+
+            80% {
+                opacity: 1;
+                transform: scale(0);
+            }
+
+            90% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        .rain {
+    position: fixed;  /* Ensure it covers the entire screen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Prevent interaction */
+    z-index: -1; /* Push behind text */
+}
+
+    </style>
+</head>
+
+<body class="bg-mattblack relative z-50">
+    <div class="rain -z-10"></div>
+    <div class="flex z-40 w-screen h-screen justify-center place-items-center">
+        <div class="border-4 py-8 rounded-lg bg-mattblack z-40 border-adminblue w-[90%] md:w-[50%] relative">
+            <div class="sigailogo absolute left-0 -z-0 top-0 rounded-lg w-full h-full opacity-20"></div>
+            <div class="absolute top-full right-0 font-pixelify text-adminblue text-2xl py-2">
+                <a href="/api/logout">&lt;- logout</a>
+            </div>
+            <div class="absolute bottom-full left-0 font-pixelify text-adminblue text-2xl py-2">
+                Hello {{username}}.
+            </div>
+            <div class="text-adminblue p-4 relative z-50 font-pixelify font-bold text-center">
+                
+                <h1 class="text-3xl md:text-7xl pt-4">
+                      Reverse Turing
+                </h1>
+                <p class="text-base md:text-xl px-2 pt-2 pb-4">
+                    Check for reports, manage users and more. You have too much power. <span class="text-neongreen">Use it wisely.</span>
+                </p>
+                <br>
+                <a href="/admin/reports" class="bg-mattblack flex m-1 justify-center border-2 border-adminblue text-adminblue px-4 py-2 rounded-lg text-2xl">Reports</a>
+                <a href="/admin/create-user" class="bg-mattblack m-1 border-2 justify-center border-adminblue text-adminblue px-4 py-2 rounded-lg text-2xl flex">Create Users</a>
+                <a href="/leaderboard" class="bg-mattblack m-1 border-2 border-adminblue justify-center text-adminblue px-4 py-2 rounded-lg text-2xl flex">Leaderboard</a>
+                <a href="/admin/ban" class="bg-mattblack m-1 border-2 border-adminblue text-adminblue justify-center px-4 py-2 rounded-lg text-2xl flex">Ban User</a>
+                <a href="/admin/unban" class="bg-mattblack m-1 border-2 border-adminblue text-adminblue justify-center px-4 py-2 rounded-lg text-2xl flex">Unban User</a>
+                <a href="/admin/chat-logs" class="bg-mattblack m-1 border-2 border-adminblue text-adminblue px-4 justify-center py-2 rounded-lg text-2xl flex">Chat logs</a>
+                <a href="/admin/admin-logs" class="bg-mattblack m-1 border-2 border-adminblue text-adminblue px-4 justify-center py-2 rounded-lg text-2xl flex">Admin logs</a>
+                <br>
+            </div>
+        </div>
+
+    </div>
+
+       
+    
+    <script>
+        function generateRain() {
+            const rainContainer = document.querySelector(".rain");
+            rainContainer.innerHTML = ""; // Clear existing drops
+
+            let position = 0;
+            let raindropsHTML = "";
+
+            while (position < 95) {
+                const randomDelay = Math.floor(Math.random() * 98) + 1;
+                const randomStep = Math.floor(Math.random() * 2) + 2;
+                position += randomStep;
+
+                const bottomPosition = randomStep * 2 - 1 + 100;
+                const animationTime = `0.5${randomDelay}s`;
+                const animationDelay = `0.${randomDelay}s`;
+
+                raindropsHTML += `
+      <div class="drop -z-10" style="left: ${position}%; bottom: ${bottomPosition}%; animation-delay: ${animationDelay}; animation-duration: ${animationTime};">
+        <div class="stem -z-10" style="animation-delay: ${animationDelay}; animation-duration: ${animationTime};"></div>
+        <div class="splat -z-10" style="animation-delay: ${animationDelay}; animation-duration: ${animationTime};"></div>
+      </div>`;
+            }
+
+            rainContainer.innerHTML = raindropsHTML;
+        }
+
+        document.addEventListener("DOMContentLoaded", generateRain);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Turing</title>
+    <link rel="stylesheet" href="/static/output.css?v=2">
+
+</head>
+
+<body class="bg-mattblack relative z-50">
+
+    <div class="flex z-40 w-screen h-screen justify-center place-items-center">
+        <div class="border-4 rounded-lg bg-mattblack z-40 border-adminblue h-[80%] w-[95%] relative">
+            <!-- <div class="sigailogo absolute left-0 -z-0 top-0 rounded-lg w-full h-full opacity-20"></div> -->
+            <div class="absolute bottom-full left-0 font-pixelify text-adminblue text-3xl py-2">
+                  Reverse Turing
+            </div>
+
+            <div class="absolute top-full right-0 font-pixelify text-adminblue text-2xl py-2">
+                <a href="/admin/chat-logs">&lt;- chat logs</a>
+            </div>
+            
+            <div class="text-adminblue p-4 relative z-50 font-pixelify font-bold text-center">
+                <h1 class="text-4xl md:text-7xl">
+                    Chat Room
+                </h1>
+                <p class="text-lg md:text-xl px-2">
+                    {{user1}} VS {{user2}}
+                </p>
+                <p class="text-white mt-8">
+                    Start of a new conversation.
+                </p>
+                <div id="chatbox" class="w-full h-[50vh] pt-4 overflow-y-scroll">
+                    {{chathistory | safe}}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+       
+    <script>
+        const beepedText = [
+            "@#$%!&*?",
+            "*!@#%$&!",
+            "#%&*!@$?",
+            "!$*@?#%^",
+            "&?%!#@$*",
+            "$!*@&#%^",
+            "?%$#@!*&",
+            "&*!@$?#%",
+            "#@%!$*&?",
+            "!#@$%*&?"
+        ];
+        function censor(){
+            const censoredText = beepedText[Math.floor(Math.random() * beepedText.length)];
+            document.getElementById("censored-text").innerText = censoredText;
+        }
+        setInterval(censor, 100);
+    </script>
+</body>
+
+</html>

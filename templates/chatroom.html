@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Turing</title>
+    <link rel="stylesheet" href="/static/output.css?v=2">
+
+</head>
+
+<body class="bg-mattblack relative z-50">
+    <div id="judgement-div" class="absolute hidden z-[100] top-0 left-0 w-screen h-screen overflow-hidden place-items-center justify-center bg-mattblack">
+        <div class="w-[90%] judgement-div rounded-lg md:w-[50%] border-4 bg-mattblack border-neongreen">
+            <h1 class="text-center p-8 font-pixelify text-neongreen text-4xl md:text-8xl">
+                Who were you talking to?
+            </h1>
+            <div id="guesstracker-modal" class="hidden text-center font-pixelify text-neongreen text-2xl md:text-4xl pb-4">
+                Guess time: 5s
+            </div>
+            <div class="flex py-4 justify-center place-items-center">
+                <button onclick="judgementTime('AI');" class="judgement-button">
+                    AI
+                </button>
+
+                <button onclick="judgementTime('human');" class="judgement-button">
+                    Human
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex z-40 w-screen h-screen justify-center place-items-center">
+        <div class="border-4 rounded-lg bg-mattblack z-40 border-neongreen h-[80%] w-[95%] relative">
+            <!-- <div class="sigailogo absolute left-0 -z-0 top-0 rounded-lg w-full h-full opacity-20"></div> -->
+            <div id="statusbox" class="absolute top-3 right-3 text-right font-pixelify text-neongreen">
+                <div id="timetracker" class="hidden text-lg md:text-3xl">
+                    Time remaining: 20s
+                </div>
+                <div id="guesstracker" class="hidden text-lg md:text-3xl">
+                    Guess time: 10s
+                </div>
+                <div id="wordtracker" class="text-xl md:text-3xl">
+                    Words: 0/30
+                </div>
+            </div>
+            <div class="text-neongreen p-4 relative z-50 font-pixelify font-bold text-center">
+                <h1 class="text-4xl md:text-7xl">
+                    Chat Room
+                </h1>
+                <p class="text-lg md:text-xl px-2">
+                    You are currently talking to <span id="censored-text">&?%!#@$*</span>
+                </p>
+                <p id="alertportal" class="text-white mt-8 text-xl md:text-1xl">
+                    Please wait...
+                </p>
+                <button id="guessbtn" class="hidden send-button mx-auto mt-2" onclick="showJudgement();">
+                    Guess now
+                </button>
+                <div id="chatbox" class="w-full h-[50vh] pt-4 overflow-y-scroll">
+
+                </div>
+                <br>
+                <div id="inputdiv" class="hidden justify-center place-items-center">
+                    <input id="chatinputplswork" class="chat-input" placeholder="Type your message here...">
+                    <button id="sendbtn" onclick="sendMessage();"  class="send-button">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const beepedText = [
+            "@#$%!&*?",
+            "*!@#%$&!",
+            "#%&*!@$?",
+            "!$*@?#%^",
+            "&?%!#@$*",
+            "$!*@&#%^",
+            "?%$#@!*&",
+            "&*!@$?#%",
+            "#@%!$*&?",
+            "!#@$%*&?"
+        ];
+        function censor(){
+            const censoredText = beepedText[Math.floor(Math.random() * beepedText.length)];
+            document.getElementById("censored-text").innerText = censoredText;
+        }
+        setInterval(censor, 100);
+    </script>
+
+    <script>
+        let chat_id = "{{chat_id}}";
+        let username= "{{username}}";
+        let first = ("{{first}}".toLowerCase() == "true")? true: false;
+        let chatboxdiv = document.getElementById("chatbox");
+        let inputdiv = document.getElementById("inputdiv");
+        let alertportal = document.getElementById("alertportal");
+        let userCount = 0;
+        let otherCount = 0;
+        let maxMessages = 4;
+        let maxWords = 30;
+        let messageCount = 0;
+        let sendButton = document.getElementById("sendbtn");
+        let wordtracker = document.getElementById("wordtracker");
+        let guesstracker = document.getElementById("guesstracker");
+        let guesstrackerModal = document.getElementById("guesstracker-modal");
+        let guessButton = document.getElementById("guessbtn");
+        let timetracker = document.getElementById("timetracker");
+        let turnStarted = null;
+        let turnTimeout = 100;
+        let chatActive = true;
+                    let guessLockUntil = null;
+                    let guessWindowSeconds = 10;
+                    let userHasGuessed = false;
+                    let guessExpired = false;
+                    let canGuess = false;
+
+        inputdiv.style.display = "flex";
+        alertportal.innerHTML = `Messages: ${userCount}/${maxMessages} | Word limit: ${maxWords}`;
+        document.getElementById("chatinputplswork").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        document.getElementById("chatinputplswork").addEventListener("input", function() {
+            updateWordTracker();
+        });
+
+        function countWords(text){
+            return text.trim().split(/\s+/).filter(Boolean).length;
+        }
+
+        function updateWordTracker(){
+            const message = document.getElementById("chatinputplswork").value;
+            const words = countWords(message);
+            if(wordtracker){
+                wordtracker.innerText = `Words: ${words}/${maxWords}`;
+            }
+            const overLimit = words > maxWords;
+            const maxedMessages = userCount >= maxMessages;
+            if(overLimit || maxedMessages){
+                sendButton.disabled = true;
+                sendButton.style.opacity = "0.5";
+                sendButton.style.cursor = "not-allowed";
+            }else{
+                sendButton.disabled = false;
+                sendButton.style.opacity = "1";
+                sendButton.style.cursor = "pointer";
+            }
+        }
+
+        function updateTimeTracker(){
+            if(!turnStarted || !chatActive){
+                if(timetracker){
+                    timetracker.classList.add("hidden");
+                }
+                return;
+            }
+            const now = Date.now() / 1000;
+            const remaining = Math.ceil(turnTimeout - (now - turnStarted));
+            if(remaining <= 0){
+                if(timetracker){
+                    timetracker.classList.add("hidden");
+                }
+                fetch(`/chat/${chat_id}/end`);
+                document.getElementById("judgement-div").style.display = "flex";
+                return;
+            }
+            if(remaining <= 20){
+                if(timetracker){
+                    timetracker.classList.remove("hidden");
+                    timetracker.innerText = `Time remaining: ${remaining}s`;
+                }
+            }else{
+                if(timetracker){
+                    timetracker.classList.add("hidden");
+                }
+            }
+        }
+
+        function updateGuessTracker(){
+            if(!guessLockUntil || userHasGuessed){
+                if(guesstracker){
+                    guesstracker.classList.add("hidden");
+                }
+                if(guesstrackerModal){
+                    guesstrackerModal.classList.add("hidden");
+                }
+                return;
+            }
+            const now = Date.now() / 1000;
+            const remaining = Math.ceil(guessLockUntil - now);
+            if(remaining <= 0){
+                if(guesstracker){
+                    guesstracker.classList.add("hidden");
+                }
+                if(guesstrackerModal){
+                    guesstrackerModal.classList.add("hidden");
+                }
+                window.location.href = "/conclusion?verdict=Guess+window+expired&title=Time+Up";
+                return;
+            }
+            if(guesstracker){
+                guesstracker.classList.remove("hidden");
+                guesstracker.innerText = `Guess time: ${remaining}s`;
+            }
+            if(guesstrackerModal){
+                guesstrackerModal.classList.remove("hidden");
+                guesstrackerModal.innerText = `Guess time: ${remaining}s`;
+            }
+        }
+
+        function sendMessage(){
+            const message = document.getElementById("chatinputplswork").value;
+            if(message.trim() === ""){
+                return;
+            }
+            if(userCount >= maxMessages){
+                return;
+            }
+            if(countWords(message) > maxWords){
+                updateWordTracker();
+                return;
+            }
+            fetch(`/chat/${chat_id}/send?message=${encodeURIComponent(message)}`)
+            .then(response => {
+                response.json().then(data => {
+                    if(response.status === 200){
+                        document.getElementById("chatinputplswork").value = "";
+                        fetch(`/chat/${chat_id}/get`).then(response => {
+                            response.json().then(data => {
+                                chatboxdiv.innerHTML = data.messages;
+                            });
+                        });
+                    }else{
+                        if(data.message && data.message.toLowerCase().includes("word limit")){
+                            return;
+                        }
+                        alert(data.message || "Error sending message");
+                    }
+                });
+            });
+            inputClose();
+        }
+
+        function fetchRegularly(){
+            fetch(`/chat/${chat_id}/get`).then(response => {
+                response.json().then(data => {
+                    chatboxdiv.innerHTML = data.messages;
+                    if(data.messages != ""){
+                        chatboxdiv.scrollTop = chatboxdiv.scrollHeight;
+                    }
+                    userCount = data.user_count ?? userCount;
+                    otherCount = data.other_count ?? otherCount;
+                    maxMessages = data.max_messages ?? maxMessages;
+                    maxWords = data.max_words ?? maxWords;
+                    turnStarted = data.turn_started ?? turnStarted;
+                    turnTimeout = data.turn_timeout ?? turnTimeout;
+                    chatActive = data.active ?? chatActive;
+                    messageCount = data.message_count ?? messageCount;
+                    guessLockUntil = data.guess_lock_until ?? guessLockUntil;
+                    guessWindowSeconds = data.guess_window_seconds ?? guessWindowSeconds;
+                    userHasGuessed = data.user_has_guessed ?? userHasGuessed;
+                    guessExpired = data.guess_expired ?? guessExpired;
+                    canGuess = data.can_guess ?? canGuess;
+                    updateWordTracker();
+
+                    if(data.active === false){
+                        inputdiv.style.display = "none";
+                        alertportal.innerHTML = "Chat ended. Please judge.";
+                        document.getElementById("judgement-div").style.display = "flex";
+                        return;
+                    }
+
+                    if(canGuess){
+                        guessButton.classList.remove("hidden");
+                    }
+                    if(guessLockUntil && !userHasGuessed){
+                        document.getElementById("judgement-div").style.display = "flex";
+                    }
+                    if(guessExpired && !userHasGuessed){
+                        window.location.href = "/conclusion?verdict=Guess+window+expired&title=Time+Up";
+                        return;
+                    }
+                    inputClose();
+                    updateTimeTracker();
+                    updateGuessTracker();
+                });
+            });
+        }
+
+        function inputClose(){
+            if(chatActive && userCount < maxMessages){
+                inputdiv.style.display = "flex";
+            }else{
+                inputdiv.style.display = "none";
+            }
+            alertportal.innerHTML = `Messages: ${userCount}/${maxMessages} | Word limit: ${maxWords}`;
+            updateWordTracker();
+            updateTimeTracker();
+            updateGuessTracker();
+        }
+
+        function showJudgement(){
+            document.getElementById("judgement-div").style.display = "flex";
+        }
+
+        function judgementTime(judgement){
+            fetch(`/chat/${chat_id}/judgement?judgement=${judgement}`)
+            .then(response => {
+                response.json().then(data => {
+                    window.location.href = data.url;
+                });
+            });
+        }
+        setInterval(fetchRegularly, 2000);
+        setInterval(updateTimeTracker, 1000);
+        setInterval(updateGuessTracker, 1000);
+    </script>
+</body>
+
+</html>

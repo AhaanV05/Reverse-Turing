@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Turing</title>
+    <link rel="stylesheet" href="/static/output.css?v=2">
+</head>
+
+<body class="bg-mattblack overflow-hidden relative z-50 font-pixelify">
+    <div class="flex z-40 w-screen h-screen justify-center place-items-center">
+        <div class="border-4 rounded-lg bg-mattblack z-40 border-neongreen w-[95%] md:w-[90%] relative">
+            <div class="absolute top-full right-0 font-pixelify text-neongreen text-2xl py-2">
+                <a href="/dashboard">&lt;- dashboard</a>
+            </div>
+            <div class="text-neongreen p-8 md:p-12 relative z-50 font-pixelify font-bold text-left leading-relaxed">
+                <div class="text-center">
+                    <div class="text-xl md:text-3xl underline decoration-neongreen/60">
+                        Rules & Scoring
+                    </div>
+                    <div class="text-xl md:text-3xl mt-3">
+                        You will be paired with either a human or an AI. Your goal is to guess who you're talking to.
+                    </div>
+                </div>
+
+                <div class="mt-8 border-t border-neongreen/30 pt-6">
+                    <h2 class="text-xl md:text-3xl underline decoration-neongreen/60">Limits</h2>
+                    <ul class="text-lg md:text-2xl mt-3 space-y-2 pl-6">
+                        <li><span class="mr-2">•</span>4 messages per person</li>
+                        <li><span class="mr-2">•</span>30 words max per message</li>
+                        <li><span class="mr-2">•</span>60 seconds to reply (session ends if you miss)</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 border-t border-neongreen/30 pt-6">
+                    <h2 class="text-xl md:text-3xl underline decoration-neongreen/60">Guessing</h2>
+                    <ul class="text-lg md:text-2xl mt-3 space-y-2 pl-6">
+                        <li><span class="mr-2">•</span>You can guess after at least 2 messages are sent in the chat (one each).</li>
+                        <li><span class="mr-2">•</span>When the first person guesses, the chat locks and the other person has 10 seconds to guess.</li>
+                        <li><span class="mr-2">•</span>If the other person does not guess in time, they get 0 points.</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 border-t border-neongreen/30 pt-6">
+                    <h2 class="text-xl md:text-3xl underline decoration-neongreen/60">Scoring</h2>
+                    <ul class="text-lg md:text-2xl mt-3 space-y-2 pl-6">
+                        <li><span class="mr-2">•</span>Wrong guess = 0 points.</li>
+                        <li><span class="mr-2">•</span>Correct guess = Base Score × multipliers.</li>
+                        <li><span class="mr-2">•</span>Base Score: 100 (minimum 5 on correct).</li>
+                        <li><span class="mr-2">•</span>Perfect score (best possible): 120 points.</li>
+                        <li><span class="mr-2">•</span>There are hidden factors that reduce your score. If you figure them out, good for you.</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 border-t border-neongreen/30 pt-6">
+                    <h2 class="text-xl md:text-3xl underline decoration-neongreen/60">Bounty Bonus</h2>
+                    <ul class="text-lg md:text-2xl mt-3 space-y-2 pl-6">
+                        <li><span class="mr-2">•</span>If you’re correct and the other person is wrong, you get a +25% bonus (capped so the final score never exceeds 120).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

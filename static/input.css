@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+npx tailwindcss build static/input.css -o static/output.css --watch
+*/
+
+@font-face {
+    font-family: 'Pixel Operator Mono';
+    src: url('/static/PixelOperatorMono.ttf') format('truetype');
+    font-display: swap;
+}
+
+body {
+    font-family: 'Pixel Operator Mono', monospace;
+}
+
+.login-input{
+    @apply font-pixelify border-2 bg-white text-mattblack px-2 py-4 my-2 md:my-4 text-3xl rounded-lg w-full md:w-[80%] border-neongreen;
+}
+
+.login-button {
+    @apply bg-mattblack hover:bg-black border-2 border-neongreen text-neongreen px-4 py-2 rounded-lg text-3xl my-2 md:my-4;
+}
+
+.admin-login-input{
+    @apply font-pixelify border-2 bg-white text-mattblack px-2 py-4 my-2 md:my-4 text-3xl rounded-lg w-full md:w-[80%] border-adminblue;
+}
+
+.admin-login-button {
+    @apply bg-mattblack hover:bg-black border-2 border-adminblue text-adminblue px-4 py-2 rounded-lg text-3xl my-2 md:my-4;
+}
+
+.sigailogo {
+    background-image: url("./logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+}
+
+.start-button {
+    box-shadow: black 5px 5px 0px 0px, #39FF14 10px 10px 0px 0px;
+    @apply bg-neongreen px-8 border-4 border-black py-4 text-3xl text-mattblack font-bold;
+    transition: all 0.2s;
+}
+
+.start-button:hover {
+    box-shadow: black 2px 2px 0px 0px, #39FF14 4px 4px 0px 0px;
+    transform: translate(2px, 2px);
+}
+
+.other-text {
+    @apply text-mattblack bg-neongreen w-fit px-4 rounded-lg py-2 text-xl md:text-3xl;
+}
+
+.other-div {
+    @apply flex justify-start place-items-center w-full;
+}
+
+.user-text {
+    @apply text-neongreen bg-mattblack w-fit px-4 rounded-lg py-2 text-xl md:text-3xl;
+}
+
+.user-div {
+    @apply flex justify-end place-items-center w-full;
+}
+
+.chat-input {
+    @apply bg-white px-4 border-2 border-neongreen py-2 text-xl md:text-3xl text-mattblack w-full font-bold;
+}
+
+.send-button {
+    @apply bg-neongreen ml-2 px-4 border-2 border-neongreen py-2 text-xl md:text-3xl text-mattblack font-bold;
+    transition: all 0.2s;
+}
+
+.judgement-button {
+    @apply bg-neongreen hover:bg-white hover:border-white px-4 font-pixelify mx-2 border-2 border-neongreen py-2 text-2xl md:text-4xl text-black font-bold;
+}
+
+.report-td {
+    @apply border-2 border-adminblue;
+}
